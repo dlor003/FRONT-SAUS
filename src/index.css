@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background-color: #f0f0f0; /* Si tu veux un fond gris */
+}
+
+#root { /* Si tu utilises create-react-app */
+  height: 100%;
+}
+
+/* Pour checkbox1 */
+.checkbox1 input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box; /* Pour éviter que la taille change avec le padding/margin */
+}
+
+/* Pour checkbox2 */
+.checkbox2 input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box; /* Appliquer la même règle */
+}
