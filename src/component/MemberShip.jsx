@@ -24,11 +24,11 @@ const Membership = () => {
         autresNationalite: "",
         telephone: "",
         email: "",
-        diplome: [],
-        autreDiplome: "", // Gère la valeur saisie pour "Autres"
+        diplomes: [],
+        autresDiplomes: "", // Gère la valeur saisie pour "Autres"
         poles: Array(2).fill({ name: "" }), // Initialisez avec 2 objets
         section: "",
-        profession: "",
+        activity: "",
         domain: "",
         date_inscription: "",
         membre_Actif: false,
@@ -68,6 +68,7 @@ const Membership = () => {
      // Handle changes in the select
      const handleInputChange = (e) => {
         const { name, value } = e.target;
+        
 
         // Si c'est un champ de type 'pole', on met à jour le tableau des pôles
         if (name.startsWith("pole")) {
@@ -83,6 +84,8 @@ const Membership = () => {
                 ...(name === "nationalite" && value !== "Autres" ? { autresNationalite: "" } : {}),
             }));
         }
+
+
 
         // Efface les erreurs pour ce champ
         setErrors((prevErrors) => ({
@@ -107,7 +110,7 @@ const Membership = () => {
         if (!formData.telephone.trim()) errors.telephone = "Phone number is required.";
         if (!formData.adress.trim()) errors.adress = "adress is required.";
         if (!formData.domain.trim()) errors.domain = "domain is required.";
-        if (formData.diplome.length === 0) errors.diplome = "At least one diploma is required.";
+        if (formData.diplomes.length === 0) errors.diplomes = "At least one diploma is required.";
         
         // Vérifie que l'utilisateur a coché au moins un type de membre
         if (!formData.membre_Actif && !formData.membre_sympathisant) {
@@ -115,8 +118,8 @@ const Membership = () => {
         }
 
         // Vérification des diplômes
-        if (formData.diplome.length === 0 && !(formData.diplome.includes("autres") && formData.autreDiplome.trim() !== "")) {
-            errors.diplome = "At least one diploma must be selected or entered if 'Autres' is chosen.";
+        if (formData.diplomes.length === 0 && !(formData.diplomes.includes("autres") && formData.autresDiplomes.trim() !== "")) {
+            errors.diplomes = "At least one diploma must be selected or entered if 'Autres' is chosen.";
         }
 
         if (!formData.email.trim()) {
@@ -137,14 +140,8 @@ const Membership = () => {
         }
 
         // Vérifier si "genre" est vide
-        if (!formData.profession.trim()) {
-            errors.profession = "Profession is required.";
-        } else {
-            // Vérifier si "genre" est valide
-            const validProfession = ["Etudiant", "Retraité", "Recherche emploi", "Salarié", "Indépendant"];
-            if (!validProfession.includes(formData.profession.trim())) {
-                errors.profession = "profession must be Etudiant, Retraité, Recherche emploi.";
-            }
+        if (!formData.activity.trim()) {
+            errors.activity = "activity is required.";
         }
 
          // Vérifier si "section" est vide
@@ -161,9 +158,17 @@ const Membership = () => {
         }
 
         const hasAtLeastOnePole = formData.poles.some((pole) => pole.value && pole.value.trim() !== "");
-        if (!hasAtLeastOnePole) {
-            errors.poles = "Veuillez sélectionner au moins un pôle de recherche.";
-        }
+    if (!hasAtLeastOnePole) {
+        errors.poles = "Veuillez sélectionner au moins un pôle de recherche.";
+    }
+
+    // Vérifier les doublons
+    const values = formData.poles.map((pole) => pole.value);
+    const uniqueValues = new Set(values);
+    if (values.length !== uniqueValues.size) {
+        errors.poles = "Les pôles doivent être uniques.";
+    }
+
 
         // Vérifier si tous les champs sont remplis
         //  formData.poles.forEach((pole, index) => {
@@ -173,72 +178,49 @@ const Membership = () => {
         // });
 
         // Vérifier les doublons
-        const values = formData.poles.map((pole) => pole.value);
-        const uniqueValues = new Set(values);
-        if (values.length !== uniqueValues.size) {
-            errors.poles = "Les pôles doivent être uniques.";
-        }
+        
 
         // Return errors object
         return errors;
-    };
-    
-
-    
-
-    // Fonction de mise à jour des diplômes
-    const handleDiplomeChange = (diplomes, autreDiplome) => {
-        setFormData({ ...formData, diplome: diplomes, autreDiplome });
     };
 
     // Fonction de soumission du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true); // Active l'état "en cours de soumission"
-
+    
         const validationErrors = validateForm();
         setErrors(validationErrors);
-
+    
         if (Object.keys(validationErrors).length === 0) {
             console.log("Form is valid. Submitting data:", formData);
-            // Perform submission logic here
-
-            // Créez une copie de `diplome` et ajoutez le champ "autreDiplome" si nécessaire
-            let updatedDiplomes = [...formData.diplome];
-            if (updatedDiplomes.includes("autres") && formData.autreDiplome.trim() !== "") {
-                updatedDiplomes = updatedDiplomes.filter((diplome) => diplome !== "autres");
-                updatedDiplomes.push(formData.autreDiplome.trim());
-            }
-
-            // Prépare les données à envoyer
+    
+            // Transform `poles` pour correspondre au format attendu
             const dataToSend = {
                 ...formData,
-                diplome: updatedDiplomes,
+                poles: formData.poles.map((pole) => pole.value), // Extraire uniquement les valeurs des pôles
             };
-
-            try{
-                const response = await axios.post("http://127.0.0.1:8000/api/INSCRIPTION-SAUS", dataToSend);
-                console.log('Données enregistrer :', response.data); // Debug des données
+    
+            try {
+                console.log(dataToSend);
+                const response = await axios.post(
+                    "http://127.0.0.1:8000/api/INSCRIPTION-SAUS",
+                    dataToSend
+                );
+                console.log("Données enregistrées :", response.data); // Debug des données
                 if (response.data && response.data.id) {
                     // Naviguer avec les données
-                    navigate('/Register', { state: { userData: response.data } });
-                  }
-            }catch (error) {
-                console.error('Erreur lors de la sauvegarde des donnees :', error.message);
+                    navigate("/Register", { state: { userData: response.data } });
+                }
+            } catch (error) {
+                console.log(error)
+                console.error("Erreur lors de la sauvegarde des données :", error.message);
             }
-
-            
-
-            console.log("Données envoyées :", dataToSend);
-            // Ici tu peux envoyer `dataToSend` à une API via Axios ou Fetch
-
+    
             setIsSubmitting(false); // Réactive le bouton une fois terminé
-            
-
         }
-
-        
     };
+    
 
     return (
         <form onSubmit={handleSubmit }>
@@ -312,8 +294,9 @@ const Membership = () => {
                 />
 
                 <Diplome 
-                    onDiplomeChange={handleDiplomeChange} 
-                    errors={{diplome: errors.diplome}}
+                    formData={formData}
+                    handleInputChange={handleInputChange}
+                    errors={{diplomes: errors.diplomes}}
                 />
 
                 <ResearchPole 
@@ -338,7 +321,7 @@ const Membership = () => {
                     formData={formData} 
                     handleInputChange={handleInputChange} 
                     errors={{
-                        profession: errors.profession,
+                        activity: errors.activity,
                         domain: errors.domain
                     }}
                 />

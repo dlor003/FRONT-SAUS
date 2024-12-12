@@ -45,7 +45,7 @@ function App() {
 
     return (
         <>
-            <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-emerald-400 to-indigo-800 py-5">
+            <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-emerald-400 to-indigo-800 py-5 ">
                 <div className="flex justify-between items-center mx-36">
                     <div className="text-white text-4xl font-bold">SAUS</div>
                     <div className="flex gap-6">

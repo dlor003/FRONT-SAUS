@@ -1,13 +1,14 @@
+import React, { useEffect } from "react";
+import GetStore from "../ZustandFile/GetStore";
+
 const ResearchPole = ({ formData, handleInputChange, errors }) => {
-    const options = [
-        "Sciences Humaines, Sociales et du Langage",
-        "Sciences de la Société",
-        "Sciences du Vivant",
-        "Sciences Agronomiques et Alimentaires",
-        "Sciences de la Santé",
-        "Sciences de l'ingénierie et technologie",
-        "Sciences de l'éducation",
-    ];
+    const { fetchAllData, getPoles, loading, error } = GetStore();
+
+    useEffect(() => {
+        fetchAllData(); // Fetch all data when the component mounts
+    }, []);
+
+    const poles = getPoles(); // Get poles from the store
 
     return (
         <div className="p-6 bg-gray-50 mt-2">
@@ -17,14 +18,24 @@ const ResearchPole = ({ formData, handleInputChange, errors }) => {
                 </b>
             </div>
 
-            {/* Affiche une erreur globale si aucun pôle n'est sélectionné */}
+            {/* Show global error if no pole is selected */}
             {errors.poles && (
                 <p className="text-red-500 text-sm mb-4 text-center">{errors.poles}</p>
             )}
 
-            {/* Générer les sélecteurs dynamiquement */}
+            {/* Show loading spinner if data is loading */}
+            {loading && <p className="text-center text-blue-500">Loading poles...</p>}
+
+            {/* Show error message if there was an error fetching poles */}
+            {error && (
+                <p className="text-center text-red-500">
+                    There was an error fetching poles: {error}
+                </p>
+            )}
+
+            {/* Generate dynamic select fields for each pole */}
             {formData.poles.map((pole, index) => (
-                <div className="flex mt-2 ml-20" key={index}>
+                <div className="flex mt-2 ml-20" key={pole.id || index}>
                     <div>
                         <label htmlFor={`pole${index + 1}`} className="mb-2 ml-10 mr-5">
                             Pôle {index + 1} :
@@ -41,9 +52,9 @@ const ResearchPole = ({ formData, handleInputChange, errors }) => {
                             <option value="" disabled>
                                 -
                             </option>
-                            {options.map((option, optionIndex) => (
-                                <option key={optionIndex} value={option}>
-                                    {option}
+                            {poles.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.nom}
                                 </option>
                             ))}
                         </select>

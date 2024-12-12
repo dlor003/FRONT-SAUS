@@ -48,7 +48,7 @@ const Login = () => {
 
     // Affiche le formulaire si non connecté
     return (
-        <div className="flex">
+        <div className="flex ">
             <div className="w-1/2 flex flex-col justify-center items-center bg-gray-50 p-8">
                 <form className="w-full max-w-md" onSubmit={handleSubmit}>
                     <h1 className="text-2xl font-bold text-center mb-6">Connexion</h1>
