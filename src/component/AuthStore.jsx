@@ -51,40 +51,51 @@ const useAuthStore = create(
         }
       },
 
-      // Méthode de mise à jour
-      update: async (personnelId, updatedData) => {
-        set({ loading: true });
-        try {
-          const token = localStorage.getItem("token");
-          console.log("donnees authstore",updatedData)
-          const response = await axios.put(
-            `http://127.0.0.1:8000/api/personnel/${personnelId}`,
-            updatedData,
-            {
-              headers: { Authorization: `Bearer ${token}` },
+            // Méthode de mise à jour
+        update: async (personnelId, updatedData) => {
+            set({ loading: true });
+            try {
+                const token = localStorage.getItem("token");
+                console.log("Données envoyées :", updatedData);
+
+                const response = await axios.put(
+                            `http://127.0.0.1:8000/api/personnel/${personnelId}`,
+                            updatedData,
+                            {
+                                headers: { Authorization: `Bearer ${token}` },
+                            }
+                );
+
+                // Mettre à jour `dataUser` avec tout ce qui est retourné par l'API
+                set((state) => {
+                const updatedDataUser = {
+                    ...state.dataUser, // On garde l'existant
+                    ...response.data, // On fusionne avec les nouvelles données retournées
+                };
+
+                // Sauvegarder dans localStorage pour persistance
+                localStorage.setItem("auth-storage", JSON.stringify({
+                    user: state.user,
+                    isAuthenticated: state.isAuthenticated,
+                    dataUser: updatedDataUser,
+                }));
+
+                return {
+                    dataUser: updatedDataUser,
+                    loading: false,
+                };
+                });
+
+                return response.data; // Renvoie les données au composant pour d'autres actions éventuelles
+            } catch (error) {
+                console.log(error);
+                const errorMessage =
+                error.response?.data?.message || "Une erreur est survenue lors de la mise à jour.";
+                set({ error: errorMessage, loading: false });
+                throw new Error(errorMessage);
             }
-          );
+        },
 
-          // Mettre à jour les données utilisateur locales
-          set((state) => ({
-            dataUser: {
-              ...state.dataUser,
-              user: {
-                ...state.dataUser.user,
-                personnel: response.data.personnel, // Mettez à jour uniquement les données du personnel
-              },
-            },
-            loading: false,
-          }));
-
-          return response.data;
-        } catch (error) {
-          const errorMessage =
-            error.response?.data?.message || "Une erreur est survenue lors de la mise à jour.";
-          set({ error: errorMessage, loading: false });
-          throw new Error(errorMessage);
-        }
-      },
 
       // Déconnexion
       logout: () => {

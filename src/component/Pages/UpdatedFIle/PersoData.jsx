@@ -2,14 +2,15 @@ import React, {useState} from "react";
 import Modify from "../../../assets/Modify.svg";
 
 const PersoData = ({data, onUpdate}) => 
-{
+{   
+    const Donne = data.data;
     const [isEditing, setIsEditing] = useState(false); // État pour suivre le mode d'affichage
     const [formData, setFormData] = useState({
-        date_naissance: data.data.date_naissance,
-        nationalite: data.data.nationalite,
-        phone: data.data.phone.toString(),
-        adresse: data.data.adresse,
-        genre: data.data.genre,
+        date_naissance: Donne.BodyData.date_naissance,
+        nationalite: Donne.BodyData.nationalite,
+        phone: Donne.BodyData.phone.toString(),
+        adresse: Donne.BodyData.adresse,
+        genre: Donne.BodyData.genre,
         
     }); // Stocker uniquement les champs nécessaires
 

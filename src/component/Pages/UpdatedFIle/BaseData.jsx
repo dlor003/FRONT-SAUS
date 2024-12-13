@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import Modify from "../../../assets/Modify.svg";
 
 const BaseData = ({ data, onUpdate }) => {
+
+    const Donne = data.data;
     const [isEditing, setIsEditing] = useState(false); // État pour suivre le mode d'affichage
     const [formData, setFormData] = useState({
-        nom: data.data.nom,
-        prenom: data.data.prenom,
-        appelation: data.data.appelation,
-        mail: data.data.mail,
+        nom: Donne.BodyData.nom,
+        prenom: Donne.BodyData.prenom,
+        appelation: Donne.BodyData.appelation,
+        mail: Donne.BodyData.mail,
     }); // Stocker uniquement les champs nécessaires
 
     // Fonction pour basculer entre les modes d'édition et d'affichage
@@ -45,9 +47,9 @@ const BaseData = ({ data, onUpdate }) => {
         <div className="bg-white rounded-lg shadow-md p-6">
             <div className="relative flex items-center space-x-4">
                 {/* Photo de profil */}
-                {data.data.profile_picture ? (
+                {Donne.BodyDataprofile_picture ? (
                     <img
-                        src={data.data.profile_picture}
+                        src={Donne.BodyDataprofile_picture}
                         alt="Profile"
                         className="w-24 h-24 rounded-full"
                     />
