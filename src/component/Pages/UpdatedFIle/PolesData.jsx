@@ -8,7 +8,7 @@ const PolesData = ({data, onUpdate}) => {
     const [tables, setTables] = useState(Array(2).fill({ value: "" })); // Valeur initiale vide
     const poles = getPoles();
     const [isEditing, setIsEditing] = useState(false);
-    const polesData = data.data;
+    const polesData = data;
 
     useEffect(() => {
         fetchAllData(); // Récupérer toutes les données au montage du composant
