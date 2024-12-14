@@ -19,11 +19,12 @@ const PolesData = ({data, onUpdate}) => {
         if (isEditing && polesData) {
             const updatedTables = tables.map((table, index) => ({
                 ...table,
-                value: polesData[index] ? polesData[index].id : "", // Assigner l'id du poleData à la valeur
+                value: polesData[index] ? polesData[index].id : "", // Assigner un ID ou une chaîne vide
             }));
             setTables(updatedTables);
         }
     }, [isEditing, polesData]);
+    
 
     const toggleEditMode = () => {
         setIsEditing((prev) => !prev);
@@ -36,16 +37,26 @@ const PolesData = ({data, onUpdate}) => {
         setTables(newTables);
     };
 
-    const handleSubmit = (event) =>
-    {
-        event.prevent.default()
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    
+        // Vérification : s'assurer que toutes les options sont sélectionnées
+        if (tables.some((table) => !table.value)) {
+            alert("Veuillez sélectionner une valeur pour chaque pôle.");
+            return;
+        }
+    
         const formattedData = {
             PolesSearch: tables.map((table) => ({
                 id: table.value, // Utilisez table.value pour obtenir l'ID sélectionné
             })),
+        };
     
-        }
-    } 
+        onUpdate(formattedData); // Transmet les données au parent
+    
+        setIsEditing(false); // Quitte le mode édition
+    };
+    
 
     return (
         <div className="relative bg-white rounded-lg shadow-md p-6">
@@ -55,7 +66,7 @@ const PolesData = ({data, onUpdate}) => {
                 <div>
                     <form onSubmit={handleSubmit}>
                         {tables.map((table, index) => (
-                            <div className="flex mt-2 ml-20" key={table.id || index}>
+                            <div className="flex mt-2 ml-20" key={`table-${index}`}>
                                 <div>
                                     <label htmlFor={`table${index + 1}`} className="mb-2 ml-10 mr-5">
                                         Pôle {index + 1} :
@@ -79,12 +90,13 @@ const PolesData = ({data, onUpdate}) => {
                                 </div>
                             </div>
                         ))}
-                        <button
-                                type="submit"
-                                className="bg-green-500 text-white rounded-lg px-4 py-1 hover:bg-green-600"
+                       <button
+                            type="submit"
+                            className="mt-4 bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600 focus:outline-none"
                         >
                             Sauver
                         </button>
+
                     </form>
                     
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useAuthStore from "../AuthStore"; // Import du store Zustand
 import logo from "../../assets/logo.png";
 
@@ -9,6 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [error2, setError2] = useState("");
     const navigate = useNavigate();
+    const location = useLocation(); // Récupère l'URL actuelle
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -46,9 +47,14 @@ const Login = () => {
         );
     }
 
+    // Applique mt-64 uniquement si on est sur /login
+    const containerClass = location.pathname === "/login"
+        ? "flex bg-white p-6 rounded-lg shadow-lg col-span-6 ml-20 mr-10 mt-64"
+        : "flex bg-white p-6 rounded-lg shadow-lg col-span-6 ml-20 mr-10";
+
     // Affiche le formulaire si non connecté
     return (
-        <div className="flex ">
+        <div className={containerClass}>
             <div className="w-1/2 flex flex-col justify-center items-center bg-gray-50 p-8">
                 <form className="w-full max-w-md" onSubmit={handleSubmit}>
                     <h1 className="text-2xl font-bold text-center mb-6">Connexion</h1>

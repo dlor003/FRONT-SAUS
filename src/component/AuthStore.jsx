@@ -10,6 +10,8 @@ const useAuthStore = create(
       error: null,
       isAuthenticated: false,
       dataUser: null,
+      BasicId: null, // Ajouter une clé userId dans le store pour stocker l'ID
+
 
       // Action pour l'enregistrement
       register: async (data) => {
@@ -19,6 +21,28 @@ const useAuthStore = create(
           set({ user: response.data.user, isAuthenticated: true, loading: false });
           return response.data;
         } catch (error) {
+          const errorMessage =
+            error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.";
+          set({ error: errorMessage, loading: false });
+        }
+      },
+
+       // Action pour l'enregistrement
+       registerBasicData: async (data) => {
+        set({ loading: true, error: null });
+        try {
+          const response = await axios.post("http://127.0.0.1:8000/api/registerBasicData", data);
+          const userId = response.data.id; // Récupérer l'ID de l'utilisateur
+
+          set({ 
+              user: response.data, 
+              isAuthenticated: false, 
+              loading: false, 
+              userId, // Stocker l'ID de l'utilisateur dans le store
+          });
+            return response.data;
+        } catch (error) {
+          console.log(error)
           const errorMessage =
             error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.";
           set({ error: errorMessage, loading: false });
@@ -105,7 +129,7 @@ const useAuthStore = create(
       },
 
       // Vérifier l'authentification
-      checkAuth: () => {
+      checkAuth: async () => {
         const token = localStorage.getItem("token");
         const role = localStorage.getItem("role");
 

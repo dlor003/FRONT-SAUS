@@ -7,6 +7,7 @@ const Dashboard = () =>
     const navigate = useNavigate();
     const { isAuthenticated, dataUser } = useAuthStore();
 
+    console.log(dataUser)
     useEffect(() => {
         if (!isAuthenticated) {
         navigate("/login");
@@ -24,7 +25,7 @@ const Dashboard = () =>
     }
     console.log(dataUser)
 
-    const personnel = dataUser.user.personnel;
+    const personnel = dataUser.user;
     if (!personnel) {
         return (
         <div className="flex justify-center items-center h-screen bg-gray-100">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import useAuthStore from "./component/AuthStore"; // Import du store Zustand
 import Membership from "./component/MemberShip";
 import Login from "./component/Auth/Login";
@@ -7,37 +7,55 @@ import Home from "./component/Pages/Home";
 import Registration from "./component/Auth/Registration";
 import Profil from "./component/Pages/Profil";
 import Dashboard from "./component/Pages/Dashboard";
+import logo from "./assets/logo.png";
+import RegisterBasicData from "./component/Auth/RegisterBasicData";
 
 const ProtectedRoute = ({ allowedRoles = [], children }) => {
-    const { user, checkAuth } = useAuthStore();
+    const { user, checkAuth, BasicId } = useAuthStore();
 
     useEffect(() => {
         checkAuth();
     }, [checkAuth]);
 
+    // Vérification si l'utilisateur est authentifié
     if (!user) {
+         // Si l'utilisateur n'est pas authentifié mais a une BasicId, on le redirige vers /membership
+        if (BasicId) {
+            return <Navigate to="/membership" />;
+            
+        }
         return <Navigate to="/login" />;
     }
 
+    // Vérification des rôles
     if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
         return <Navigate to="/" />;
     }
 
+    
+
     return children;
 };
 
+
 function App() {
-    const [isVerifiedRegion, setIsVerifiedRegion] = useState(false);
     const { user, logout, checkAuth } = useAuthStore();
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-    const [activeLink, setActiveLink] = useState("Dashboard");
+    const [activeLink, setActiveLink] = useState("");
     const navigate = useNavigate();
+    const location = useLocation(); // Permet de détecter l'URL actuelle
 
+    // Mettre à jour `activeLink` en fonction du chemin actuel
     useEffect(() => {
-        if (isVerifiedRegion) {
-            navigate("/membership");
+        const currentPath = location.pathname;
+        if (currentPath === "/Dashboard") {
+            setActiveLink("Dashboard");
+        } else if (currentPath === "/Profil") {
+            setActiveLink("Profil");
+        } else {
+            setActiveLink(""); // Par défaut, aucun lien actif
         }
-    }, [isVerifiedRegion, navigate]);
+    }, [location.pathname]);
 
     useEffect(() => {
         checkAuth();
@@ -45,9 +63,13 @@ function App() {
 
     return (
         <>
-            <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-emerald-400 to-indigo-800 py-5 ">
-                <div className="flex justify-between items-center mx-36">
-                    <div className="text-white text-4xl font-bold">SAUS</div>
+            <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-emerald-400 to-indigo-800 py-2 ">
+                <div className="flex justify-between items-center mx-28">
+                    <div className="flex items-center space-x-3">
+                        {/* Ajouter l'image à gauche */}
+                        <img src={logo} alt="Logo" className="w-24 h-26" />
+                        <div className="text-white text-4xl font-bold">SAUS</div>
+                    </div>
                     <div className="flex gap-6">
                         {!isAuthenticated ? (
                             <>
@@ -62,8 +84,7 @@ function App() {
                             <>
                                 <Link
                                     to="/Dashboard"
-                                    onClick={() => setActiveLink("Dashboard")}
-                                    className={`rounded-md px-3 py-2 text-sm font-medium ${
+                                    className={`rounded-md px-3 py-2 text-sm font-semibold ${
                                         activeLink === "Dashboard"
                                             ? "bg-gray-900 text-white"
                                             : "text-gray-300 hover:bg-gray-700 hover:text-white"
@@ -73,8 +94,7 @@ function App() {
                                 </Link>
                                 <Link
                                     to="/Profil"
-                                    onClick={() => setActiveLink("Profil")}
-                                    className={`rounded-md px-3 py-2 text-sm font-medium ${
+                                    className={`rounded-md px-3 py-2 text-sm font-semibold ${
                                         activeLink === "Profil"
                                             ? "bg-gray-900 text-white"
                                             : "text-gray-300 hover:bg-gray-700 hover:text-white"
@@ -96,11 +116,20 @@ function App() {
                 </div>
             </nav>
 
+
             <Routes>
-                <Route path="/" element={<Home setIsVerifiedRegion={setIsVerifiedRegion} />} />
+                <Route path="/" element={<Home  />} />
                 <Route path="/Profil" element={<ProtectedRoute><Profil /></ProtectedRoute>} />
-                <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                <Route path="/membership" element={<Membership />} />
+                <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />  
+                <Route 
+                    path="/membership" 
+                    element={
+                        <ProtectedRoute >
+                            <Membership />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route path="/registerBasicData" element={<RegisterBasicData />} />
                 <Route path="/register" element={<Registration />} />
                 <Route path="/login" element={<Login />} />
             </Routes>

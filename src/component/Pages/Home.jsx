@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useStore from "../store";
 import Login from "../Auth/Login";
 
-const Home = ({ setIsVerifiedRegion }) => {
+const Home = () => {
     const [district, setDistrict] = useState("");
     const [commune, setCommune] = useState("");
     const [fokontany, setFokontany] = useState("");
     const [step, setStep] = useState(1);
-    const [different, setDifferent] = useState(false); // Mots de passe différents
 
 
     const { 
@@ -40,19 +39,16 @@ const Home = ({ setIsVerifiedRegion }) => {
 
     const handleVerifyFokontany = async () => {
         await verifyFokontany(commune, fokontany);
-        if (fokontanyExists) {
-        setStep(4);
-        setIsVerifiedRegion(true);
-        navigate("/membership");
-        }
-    };
+        
+    }
+
+
+    
 
     return (
             <div className="flex items-center h-full bg-gray-300 grid grid-cols-10 gap-6">
 
-                <div className="bg-white  p-6 rounded-lg shadow-lg  col-span-6 ml-20 mr-10">
                         <Login />
-                </div>
                     
                 <div className=" ml-20 mr-20 bg-white p-6 rounded-lg shadow-lg  col-span-4 ">
                     <h1 className="text-xl text-center font-bold mb-3"> INSCRIPTION</h1>
@@ -64,25 +60,27 @@ const Home = ({ setIsVerifiedRegion }) => {
                     {/* Progress Bar */}
                     <div className="w-full flex items-center mb-6">
                         {/* Étape 1 */}
-                        <div
-                        className={`h-2 flex-1 mx-1 ${
+                        <div  className={`h-2 flex-1 mx-1 ${
                             step > 1 ? "bg-green-500" : "bg-gray-300"
                         } rounded transition-all duration-300`}
-                        ></div>
+                        >
+                        </div>
 
                         {/* Étape 2 */}
-                        <div
-                        className={`h-2 flex-1 mx-1 ${
+                        <div className={`h-2 flex-1 mx-1 ${
                             step > 2 ? "bg-green-500" : "bg-gray-300"
                         } rounded transition-all duration-300`}
-                        ></div>
+                        >
+
+                        </div>
                         
                         {/* Étape 3 */}
-                        <div
-                        className={`h-2 flex-1 mx-1 ${
+                        <div className={`h-2 flex-1 mx-1 ${
                             step > 3 ? "bg-green-500" : "bg-gray-300"
                         } rounded transition-all duration-300`}
-                        ></div>
+                        >
+
+                        </div>
                     </div>
 
                     {step === 1 && (
