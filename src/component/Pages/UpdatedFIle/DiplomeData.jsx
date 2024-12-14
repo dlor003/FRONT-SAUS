@@ -69,7 +69,7 @@ const DiplomeData = ({ data, onUpdate }) => {
 
     return (
         <div className="relative bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-4 text-center">
+            <h3 className="text-xl font-semibold mb-1 text-center">
                 DIPLÔME UNIVERSITAIRE
             </h3>
 
