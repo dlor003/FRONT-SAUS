@@ -38,6 +38,7 @@ const PersoData = ({
                 <div className="ml-10 mr-20">
                     <label htmlFor="Nom" className="mt-2 mr-8 py-5">Nom :</label>
                     <input
+                        disabled
                         type="text"
                         name="Nom"
                         id="Nom"
@@ -52,6 +53,7 @@ const PersoData = ({
                 <div>
                     <label htmlFor="Prenom" className="mt-2 mr-5 px-2">Prénom :</label>
                     <input
+                        disabled
                         type="text"
                         name="Prenom"
                         id="Prenom"
