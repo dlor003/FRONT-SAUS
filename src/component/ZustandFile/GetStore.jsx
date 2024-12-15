@@ -21,6 +21,8 @@ const GetStore = create((set) => ({
             }
     },
 
+    
+
     // Accès simplifié pour chaque catégorie
     getSections: () => GetStore.getState().data.sections || [],
     getPoles: () => GetStore.getState().data.poles || [],

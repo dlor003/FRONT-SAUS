@@ -27,27 +27,31 @@ const useAuthStore = create(
         }
       },
 
-       // Action pour l'enregistrement
-       registerBasicData: async (data) => {
+      registerBasicData: async (data) => {
         set({ loading: true, error: null });
-        try {
-          const response = await axios.post("http://127.0.0.1:8000/api/registerBasicData", data);
-          const userId = response.data.id; // Récupérer l'ID de l'utilisateur
-
-          set({ 
-              user: response.data, 
-              isAuthenticated: false, 
-              loading: false, 
-              userId, // Stocker l'ID de l'utilisateur dans le store
-          });
+            try {
+            const response = await axios.post("http://127.0.0.1:8000/api/registerBasicData", data);
+        
+            // Supposons que l'ID de base est dans response.data.id
+            const userId = response.data.data.id;
+        
+            set({ 
+                BasicId: userId, // Mise à jour correcte de BasicId
+                isAuthenticated: false, // Pas encore complètement authentifié
+                user: { id: userId, ...response.data.data }, // Mise à jour de l'utilisateur minimal
+                loading: false,
+            });
+            
+        
             return response.data;
-        } catch (error) {
-          console.log(error)
-          const errorMessage =
-            error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.";
-          set({ error: errorMessage, loading: false });
-        }
-      },
+            } catch (error) {
+            const errorMessage = error.response?.data?.message || "Erreur lors de l'enregistrement.";
+            set({ error: errorMessage, loading: false });
+            throw new Error(errorMessage);
+            }
+        },
+      
+      
 
       // Action pour la connexion
       connexion: async (data) => {

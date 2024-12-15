@@ -9,33 +9,40 @@ import Profil from "./component/Pages/Profil";
 import Dashboard from "./component/Pages/Dashboard";
 import logo from "./assets/logo.png";
 import RegisterBasicData from "./component/Auth/RegisterBasicData";
+import Questionnaire from "./component/Pages/Verification/Questionnaire";
 
 const ProtectedRoute = ({ allowedRoles = [], children }) => {
-    const { user, checkAuth, BasicId } = useAuthStore();
-
+    const { user, checkAuth, BasicId, authLoading } = useAuthStore();
+  
+    // Vérifie l'authentification au chargement
     useEffect(() => {
-        checkAuth();
+      checkAuth(); // Charge l'état utilisateur au montage
     }, [checkAuth]);
-
-    // Vérification si l'utilisateur est authentifié
+  
+    // Pendant le chargement, affiche un message ou un spinner
+    if (authLoading) {
+      return <div>Chargement...</div>;
+    }
+  
+    // Autoriser l'accès à /membership si BasicId est présent
+    if (!user && BasicId) {
+      return children; // Permet d'afficher Membership
+    }
+  
+    // Redirige vers /login si aucun utilisateur n'est authentifié
     if (!user) {
-         // Si l'utilisateur n'est pas authentifié mais a une BasicId, on le redirige vers /membership
-        if (BasicId) {
-            return <Navigate to="/membership" />;
-            
-        }
-        return <Navigate to="/login" />;
+      return <Navigate to="/login" />;
     }
-
-    // Vérification des rôles
+  
+    // Vérifie les rôles spécifiés, si nécessaire
     if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/" />;
+      return <Navigate to="/" />;
     }
-
-    
-
+  
+    // Si tout est correct, affiche les enfants
     return children;
 };
+  
 
 
 function App() {
@@ -126,6 +133,14 @@ function App() {
                     element={
                         <ProtectedRoute >
                             <Membership />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/Questionnaire" 
+                    element={
+                        <ProtectedRoute >
+                            <Questionnaire />
                         </ProtectedRoute>
                     } 
                 />

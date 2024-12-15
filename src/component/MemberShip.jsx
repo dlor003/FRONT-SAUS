@@ -9,11 +9,52 @@ import Section from "./Form/Section";
 import ActivityProfesionnal from "./Form/ActivityProfesionnal";
 import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
+import useAuthStore from '../component/AuthStore';
+import { useLocation } from "react-router-dom";
 
 const Membership = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const   navigate = useNavigate();
+    const location = useLocation(); // Récupérer l'objet location
+    const [previousData, setPreviousData] = useState(null);
+    const [NomPersonne, setNomPersonne] = useState("");
+    const [PrenomPersonne, setPrenomPersonne] = useState("");
+    const [EmailPersonne, setEmailPersonne] = useState("");
+
+    useEffect(() => {
+        // Vérifier si 'state' existe et récupérer les données
+        if (location.state) {
+            setPreviousData(location.state);
+            console.log("Données précédentes :", location.state);
+            const previousData = location.state
+            console.log(previousData.data.nom)
+            setEmailPersonne(previousData.data.email)
+            setNomPersonne(previousData.data.nom)
+            setPrenomPersonne(previousData.data.prenom)
+            // Mise à jour sélective de formData pour nom, prenom et email
+            setFormData((prevFormData) => ({
+                ...prevFormData, // Garde les autres valeurs de formData inchangées
+                Nom: location.state.data.nom || "", // Pré-remplir nom si disponible
+                Prenom: location.state.data.prenom || "", // Pré-remplir prenom si disponible
+                email: location.state.data.email || "", // Pré-remplir email si disponible
+                basic_data_id: location.state.data.id || "",
+            }));
+        }
+    }, []);
+
+    const { BasicId } = useAuthStore();
+    const navigate = useNavigate();
+
+    // Si BasicId n'existe pas, redirection ou message d'erreur
+    useEffect(() => {
+        if (!BasicId) {
+        navigate("/login");
+        }
+    }, [BasicId, navigate]);
+
+    console.log(NomPersonne,PrenomPersonne,EmailPersonne)
+
     const [formData, setFormData] = useState({
+        basic_data_id: "",
         appelation: "",
         Nom: "",
         Prenom: "",
@@ -34,6 +75,7 @@ const Membership = () => {
         membre_Actif: false,
         membre_sympathisant: false,
     });
+    console.log(formData)
     const [errors, setErrors] = useState({});
 
 
@@ -220,10 +262,15 @@ const Membership = () => {
             setIsSubmitting(false); // Réactive le bouton une fois terminé
         }
     };
+
+    if (!BasicId) {
+        return <div>Redirection non autorisée</div>;
+    }
+
     
 
     return (
-        <form onSubmit={handleSubmit }>
+        <form onSubmit={handleSubmit } className="mt-28">
             <div className="bg-white shadow-lg rounded-lg p-6 " >
                 {/* Logos et titre alignés horizontalement */}
                 <div className="flex items-center justify-around mb-4">

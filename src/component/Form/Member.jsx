@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Member = ({ formData, onCheckboxChange, errors }) => {
+    console.log(formData.nom)
     return (
         <div className="p-6 bg-gray-50 mt-2">
             <div className="flex items-start mb-4">
