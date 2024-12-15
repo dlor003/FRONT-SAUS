@@ -31,7 +31,6 @@ const Contact = ({ formData, handleInputChange, errors }) => {
                         Adresse e-mail :
                     </label>
                     <input
-                        disabled
                         type="text"
                         id="email"
                         name="email"

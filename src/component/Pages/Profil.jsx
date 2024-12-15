@@ -61,7 +61,8 @@ const Profil = () => {
     const BodyData = dataUser.personnelData.bodyData || [];
     const autresDiplomes = dataUser.personnelData.bodyData.autres_diplomes || [];
     const PersoDonnee = {
-        "BodyData" : BodyData
+        "BodyData" : BodyData,
+        
     };
     const diplomeDonnee = {
         "diplomes" : diplomes,

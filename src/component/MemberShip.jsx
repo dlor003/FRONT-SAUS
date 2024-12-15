@@ -51,8 +51,6 @@ const Membership = () => {
         }
     }, [BasicId, navigate]);
 
-    console.log(NomPersonne,PrenomPersonne,EmailPersonne)
-
     const [formData, setFormData] = useState({
         basic_data_id: "",
         appelation: "",
@@ -75,7 +73,6 @@ const Membership = () => {
         membre_Actif: false,
         membre_sympathisant: false,
     });
-    console.log(formData)
     const [errors, setErrors] = useState({});
 
 
@@ -250,7 +247,7 @@ const Membership = () => {
                 console.log("Données enregistrées :", response.data); // Debug des données
                 if (response.data && response.data.id) {
                     // Naviguer avec les données
-                    navigate("/Register", { state: { userData: response.data } });
+                    navigate("/Register", { state: { userData: [response.data, location.state],   } });
                 }
             } catch (error) {
                 console.log(error)

@@ -6,10 +6,10 @@ const BaseData = ({ data, onUpdate }) => {
     const Donne = data.data;
     const [isEditing, setIsEditing] = useState(false); // État pour suivre le mode d'affichage
     const [formData, setFormData] = useState({
-        nom: Donne.BodyData.nom,
-        prenom: Donne.BodyData.prenom,
-        appelation: Donne.BodyData.appelation,
-        mail: Donne.BodyData.mail,
+        nom: Donne.BodyData.basic_data.nom,
+        prenom: Donne.BodyData.basic_data.prenom,
+        email: Donne.BodyData.basic_data.email,
+        id: Donne.BodyData.basic_data.id
     }); // Stocker uniquement les champs nécessaires
 
     // Fonction pour basculer entre les modes d'édition et d'affichage
@@ -31,7 +31,7 @@ const BaseData = ({ data, onUpdate }) => {
 
         // Création de l'objet au format demandé
         const formattedData = {
-            personnelData: { ...formData }, // Inclure uniquement les champs sélectionnés
+            BasicData: { ...formData }, // Inclure uniquement les champs sélectionnés
         };
 
         console.log("Données formatées à envoyer :", formattedData);
@@ -92,30 +92,17 @@ const BaseData = ({ data, onUpdate }) => {
                                 />
                             </div>
 
-                            <div className="mb-4">
-                                <label htmlFor="appelation" className="block text-sm font-medium text-gray-700">
-                                    Appelation
-                                </label>
-                                <input
-                                    type="text"
-                                    name="appelation"
-                                    id="appelation"
-                                    value={formData.appelation}
-                                    onChange={handleInputChange("appelation")}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
-                                />
-                            </div>
 
                             <div className="mb-4">
-                                <label htmlFor="mail" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                     Email
                                 </label>
                                 <input
                                     type="email"
-                                    name="mail"
-                                    id="mail"
-                                    value={formData.mail}
-                                    onChange={handleInputChange("mail")}
+                                    name="email"
+                                    id="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange("email")}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
                                 />
                             </div>
@@ -145,10 +132,7 @@ const BaseData = ({ data, onUpdate }) => {
                                 <strong>Prénom : </strong> {formData.prenom}
                             </p>
                             <p className="ml-10">
-                                <strong>Appelation : </strong> {formData.appelation}
-                            </p>
-                            <p className="ml-10">
-                                <strong>Email : </strong> {formData.mail}
+                                <strong>Email : </strong> {formData.email}
                             </p>
                         </div>
                     )}

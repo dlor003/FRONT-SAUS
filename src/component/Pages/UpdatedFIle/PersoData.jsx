@@ -11,6 +11,8 @@ const PersoData = ({data, onUpdate}) =>
         phone: Donne.BodyData.phone.toString(),
         adresse: Donne.BodyData.adresse,
         genre: Donne.BodyData.genre,
+        appelation: Donne.BodyData.appelation,
+        
         
     }); // Stocker uniquement les champs nécessaires
 
@@ -54,6 +56,20 @@ const PersoData = ({data, onUpdate}) =>
                 (
                     <form className="space-y-6" onSubmit={handleSubmit}>
                                 <h3 className="text-xl text-center font-semibold mb-4">DONNÉES PERSONNELLES </h3>
+
+                                <div className="mb-4 flex items-center">
+                                    <label htmlFor="appelation" className="text-sm font-medium text-gray-700 mr-2">
+                                        <strong>appelation :</strong>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="nationalite"
+                                        id="nationalite"
+                                        value={formData.appelation}
+                                        onChange={handleInputChange("appelation")}
+                                        className="mt-1 block w-32 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
+                                    />
+                                </div>
 
                                 <div className="mb-4 flex items-center">
                                     <label htmlFor="date_naissance" className="text-sm font-medium text-gray-700 mr-2">
@@ -130,6 +146,7 @@ const PersoData = ({data, onUpdate}) =>
                 ) :(
                     <>
                         <h3 className="text-xl text-center font-semibold mb-4">DONNÉES PERSONNELLES </h3>
+                        <p className="ml-10"><strong>Appelation :</strong> {formData.appelation}</p>
                         <p className="ml-10"><strong>Date de Naissance :</strong> {formData.date_naissance}</p>
                         <p className="ml-10"><strong>Genre :</strong> {formData.genre}</p>
                         <p className="ml-10"><strong>Nationalité :</strong> {formData.nationalite}</p>
