@@ -146,8 +146,6 @@ const Membership = () => {
     
         // Example validations
         if (!formData.appelation.trim()) errors.appelation = "Appelation is required.";
-        if (!formData.Nom.trim()) errors.Nom = "Last name is required.";
-        if (!formData.Prenom.trim()) errors.Prenom = "First name is required.";
         if (!formData.date_naissance.trim()) errors.date_naissance = "Date of birth is required.";
         if (!formData.telephone.trim()) errors.telephone = "Phone number is required.";
         if (!formData.adress.trim()) errors.adress = "adress is required.";
@@ -164,11 +162,11 @@ const Membership = () => {
             errors.diplomes = "At least one diploma must be selected or entered if 'Autres' is chosen.";
         }
 
-        if (!formData.email.trim()) {
-            errors.email = "Email is required.";
-        } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-            errors.email = "Invalid email format.";
-        }        
+        // if (!formData.email.trim()) {
+        //     errors.email = "Email is required.";
+        // } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+        //     errors.email = "Invalid email format.";
+        // }        
 
          // Vérifier si "genre" est vide
         if (!formData.genre.trim()) {
@@ -322,8 +320,6 @@ const Membership = () => {
                     getFinalNationalite={getFinalNationalite}
                     errors={{
                         appelation: errors.appelation,
-                        Nom: errors.Nom,
-                        Prenom: errors.Prenom,
                         date_naissance: errors.date_naissance,
                         genre: errors.genre,
                         nationalite: errors.nationalite,
@@ -335,8 +331,7 @@ const Membership = () => {
                     formData={formData} 
                     handleInputChange={handleInputChange}
                     errors={{ 
-                        telephone: errors.telephone,
-                        email: errors.email
+                        telephone: errors.telephone
                     }}
                 />
 

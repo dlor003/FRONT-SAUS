@@ -48,7 +48,7 @@ const PersoData = ({
                         placeholder="Entrez votre texte"
                         aria-describedby="error-nom"
                     /><br />
-                    {errors.Nom && <span id="error-nom" className="text-red-500">{errors.Nom}</span>}
+                    {/* {errors.Nom && <span id="error-nom" className="text-red-500">{errors.Nom}</span>} */}
                 </div>
                 <div>
                     <label htmlFor="Prenom" className="mt-2 mr-5 px-2">Prénom :</label>
@@ -63,7 +63,7 @@ const PersoData = ({
                         placeholder="Entrez votre texte"
                         aria-describedby="error-prenom"
                     /><br />
-                    {errors.Prenom && <span id="error-Prenom" className="text-red-500">{errors.Prenom}</span>}
+                    {/* {errors.Prenom && <span id="error-Prenom" className="text-red-500">{errors.Prenom}</span>} */}
                 </div>
             </div>
 

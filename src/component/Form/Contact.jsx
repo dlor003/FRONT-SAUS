@@ -41,7 +41,7 @@ const Contact = ({ formData, handleInputChange, errors }) => {
                         placeholder="Entrez votre texte"
                         aria-describedby="error-email"
                     /><br />
-                    {errors.email && <span id="error-email" className="text-red-500">{errors.email}</span>}
+                    {/* {errors.email && <span id="error-email" className="text-red-500">{errors.email}</span>} */}
 
                 </div>
             </div>
