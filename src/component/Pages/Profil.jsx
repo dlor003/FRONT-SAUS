@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../AuthStore";
+import useAuthStore from "../ZustandFile/AuthStore";
 import BaseData from "./UpdatedFIle/BaseData";
 import PersoData from "./UpdatedFIle/PersoData";
 import DiplomeData from "./UpdatedFIle/DiplomeData";
@@ -62,7 +62,9 @@ const Profil = () => {
     const autresDiplomes = dataUser.personnelData.bodyData.autres_diplomes || [];
     const PersoDonnee = {
         "BodyData" : BodyData,
-        
+        "token" : dataUser.token,
+        "id" : dataUser.personnelData.bodyData.id,
+        "profile_picture" : dataUser.personnelData.profile_picture
     };
     const diplomeDonnee = {
         "diplomes" : diplomes,
@@ -72,8 +74,9 @@ const Profil = () => {
 
     return (
         <div className="bg-gray-100 min-h-screen p-6 mt-16">
-                <h2 className="text-4xl mb-3"> MON PROFILE </h2>
-                <BaseData data={{ data: PersoDonnee }} onUpdate={handleUpdate}/>
+            
+                <h2 className="text-4xl mb-3"> PROFILE </h2>
+                <BaseData data={{ data: PersoDonnee }} onUpdate={handleUpdate} />
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <PersoData data={{ data: PersoDonnee }} onUpdate={handleUpdate}/>

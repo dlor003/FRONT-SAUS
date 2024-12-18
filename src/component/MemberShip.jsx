@@ -9,7 +9,7 @@ import Section from "./Form/Section";
 import ActivityProfesionnal from "./Form/ActivityProfesionnal";
 import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
-import useAuthStore from '../component/AuthStore';
+import useAuthStore from './ZustandFile/AuthStore';
 import { useLocation } from "react-router-dom";
 
 const Membership = () => {

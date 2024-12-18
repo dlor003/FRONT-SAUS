@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAuthStore from "../AuthStore"; // Assurez-vous d'importer correctement
+import useAuthStore from "../ZustandFile/AuthStore"; // Assurez-vous d'importer correctement
 import axios from "axios"; // Nécessaire pour les requêtes API
 
 const Registration = () => {

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useStore from "../../store";
-import useAuthStore from "../../AuthStore";
+import useAuthStore from "../../ZustandFile/AuthStore";
 import { useLocation } from "react-router-dom";
+import { data } from "jquery";
 
 const Questionnaire = () => {
     const {
@@ -16,6 +17,8 @@ const Questionnaire = () => {
         verifyDistrict,
         verifyCommune,
         verifyFokontany,
+        VerificationErrorMessage,
+        setVerificationErrorMessage
     } = useStore();
 
     const [results, setResults] = useState([]); // Résultats filtrés
@@ -30,7 +33,7 @@ const Questionnaire = () => {
     const [fokontany, setFokontany] = useState(""); // Fokontany sélectionné
 
     const dataFromPreviousPage = location.state;
-
+    console.log(dataFromPreviousPage.data.id)
     useEffect(() => {
         if (!BasicId) {
             navigate("/login");
@@ -38,8 +41,24 @@ const Questionnaire = () => {
     }, [BasicId, navigate]);
 
     useEffect(() => {
+        if (VerificationErrorMessage) {
+            const timer = setTimeout(() => {
+                setVerificationErrorMessage(null); // Réinitialiser après 3 secondes
+            }, 3000);
+    
+            return () => clearTimeout(timer); // Nettoyer le timer si le composant est démonté
+        }
+    }, [VerificationErrorMessage]);
+    
+
+    useEffect(() => {
+        console.log("Message d'erreur mis à jour :", VerificationErrorMessage);
+    }, [VerificationErrorMessage]);
+    
+    useEffect(() => {
         fetchdataToVerified();
     }, [fetchdataToVerified]);
+    
 
     // Validation des étapes
     const handleVerifyDistrict = async () => {
@@ -47,6 +66,7 @@ const Questionnaire = () => {
             await verifyDistrict(district.name);
             if (districtExists) {
                 setSearchQuery(""); // Réinitialiser la recherche pour la prochaine étape
+                useStore.getState().resetVerificationState();
                 setStep(2);
             }
         } else {
@@ -55,32 +75,43 @@ const Questionnaire = () => {
     };
 
     const handleVerifyCommune = async () => {
-        if (commune && commune.id && district) {
-            const communeData = {
-                district: district.name, // L'ID du district
-                commune: commune.name,   // L'ID de la commune
-            };
-
-            await verifyCommune(communeData);
-            if (communeExists) {
-                setSearchQuery("");  // Réinitialiser la recherche pour la prochaine étape
-                setStep(3);  // Passer à l'étape suivante
-            }
+        if (!commune || !district) {
+            useStore.getState().setVerificationErrorMessage("Veuillez sélectionner un district et une commune.");
+            return;
+        }
+    
+        const communeData = {
+            district: district.name,
+            commune: commune.name,
+            id: dataFromPreviousPage.data.id,
+        };
+    
+        await verifyCommune(communeData);
+    
+        if (communeExists) {
+            setSearchQuery("");
+            setStep(3);
         } else {
-            console.log("Commune ou district invalide");
+            // Attendre 3 secondes avant de réinitialiser le message
+            setTimeout(() => {
+                useStore.getState().resetVerificationState();
+            }, 3000);
         }
     };
+    
 
     const handleVerifyFokontany = async () => {
+    
         if (fokontany && commune) {
             const fokontanyData = {
-                fokontany_commune_id: fokontany.commune_id,  // ID de la commune dans l'objet fokontany
-                commune: commune.name,  // ID de la commune à vérifier
-                fokontany: fokontany.name,  // Nom du fokontany
+                fokontany_commune_id: fokontany.commune_id,
+                commune: commune.name,
+                fokontany: fokontany.name,
+                id: dataFromPreviousPage.data.id,
             };
-
-            await verifyFokontany(fokontanyData);  
-
+    
+            await verifyFokontany(fokontanyData);
+    
             if (fokontanyExists) {
                 navigate("/membership", { state: dataFromPreviousPage });
             }
@@ -88,6 +119,8 @@ const Questionnaire = () => {
             console.log("Fokontany ou Commune invalide");
         }
     };
+
+    
 
     // Mise à jour des résultats filtrés pour chaque étape
     useEffect(() => {
@@ -107,6 +140,8 @@ const Questionnaire = () => {
             setResults(filteredResults);
         }
     }, [dataToVerified, step, searchQuery]);
+    console.log("État loading :", loading);
+
 
     if (loading) {
         return <div>Chargement des données...</div>;
@@ -119,7 +154,7 @@ const Questionnaire = () => {
     return (
         <div className="mt-28">
             <h1 className="text-2xl font-bold mb-6">Questionnaire de Vérification</h1>
-
+            
             {/* Étape 1 : District */}
             {step === 1 && (
                 <StepComponent
@@ -145,11 +180,13 @@ const Questionnaire = () => {
                     setSelectedValue={setCommune}
                     results={results}
                     handleVerify={handleVerifyCommune}
+                    verificationErrorMessage={VerificationErrorMessage}
                 />
             )}
 
             {/* Étape 3 : Fokontany */}
             {step === 3 && (
+                
                 <StepComponent
                     title="Étape 3 : Sélectionner un Fokontany"
                     placeholder="Sélectionnez un fokontany"
@@ -159,8 +196,12 @@ const Questionnaire = () => {
                     setSelectedValue={setFokontany}
                     results={results}
                     handleVerify={handleVerifyFokontany}
+                    verificationErrorMessage={VerificationErrorMessage}
                 />
+                
             )}
+
+            
         </div>
     );
 };
@@ -175,9 +216,17 @@ const StepComponent = ({
     setSelectedValue,
     results,
     handleVerify,
+    verificationErrorMessage
 }) => {
     return (
         <div className="bg-white shadow-md rounded-md p-6 max-w-md mx-auto">
+            {verificationErrorMessage && (
+                <div className="mb-4 p-4 bg-red-100 text-red-700 border border-red-300 rounded-md">
+                    {verificationErrorMessage}
+                </div>
+            )}
+
+
             <h2 className="text-xl font-semibold mb-4">{title}</h2>
             
             {/* Barre de recherche */}
@@ -240,6 +289,7 @@ const StepComponent = ({
             >
                 Valider
             </button>
+
         </div>
     );
 };

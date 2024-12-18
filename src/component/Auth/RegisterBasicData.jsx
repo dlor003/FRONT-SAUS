@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useAuthStore from '../AuthStore';
+import useAuthStore from '../ZustandFile/AuthStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const RegisterBasicData = () => {

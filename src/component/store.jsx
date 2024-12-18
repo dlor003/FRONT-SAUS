@@ -10,6 +10,10 @@ const useStore = create((set) => ({
     error: null,
     loading: false,
     dataToVerified: null,
+    isBlocked: false, // Nouveau champ pour suivre le blocage
+    setIsBlocked: (status) => set({ isBlocked: status }),
+    VerificationErrorMessage: null,
+    setVerificationErrorMessage: (message) => set({ VerificationErrorMessage: message }),
 
     // Méthode pour récupérer toutes les données
     fetchdataToVerified: async () => {
@@ -41,32 +45,79 @@ const useStore = create((set) => ({
     },
 
     verifyCommune: async (communeData) => {
-        set({ loading: true, error: null });
+        set({ loading: true, error: null, VerificationErrorMessage: null });
         try {
-            console.log(communeData)
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/verify-commune",
                 communeData
             );
-            set({ communeExists: response.data.exists, loading: false });
+    
+            if (response.data.blocked) {
+                useStore.getState().setVerificationErrorMessage(
+                    "Vous avez atteint la limite de tentatives. Vous êtes bloqué."
+                );
+                set({ loading: false });
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 3000);
+            } else if (!response.data.exists) {
+                const attempts = response.data.attempts || 0;
+                useStore.getState().setVerificationErrorMessage(
+                    `La commune est invalide. Tentative ${attempts} sur 3.`
+                );
+                set({ loading: false });
+            } else {
+                set({ communeExists: response.data.exists, loading: false });
+            }
         } catch (error) {
-        set({ error: "Erreur lors de la vérification de la commune.", loading: false });
+            set({ error: "Erreur lors de la vérification de la commune.", loading: false });
         }
     },
+    
+    
+    
 
     verifyFokontany: async (fokontanyData) => {
-        set({ loading: true, error: null });
+        set({ loading: true, error: null, messageTentativeFailedFokotany: null });
         try {
-            console.log(fokontanyData)
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/verify-fokontany",
                 fokontanyData
             );
-            set({ fokontanyExists: response.data.exists, loading: false });
+    
+            if (response.data.blocked) {
+                useStore.getState().setVerificationErrorMessage(
+                    "Vous avez atteint la limite de tentatives. Vous êtes bloqué."
+                );
+                set({ loading: false }); // Important pour arrêter le chargement
+                setTimeout(() => {
+                    navigate("/"); // Redirection avec React Router
+                }, 3000);
+            } else if (!response.data.exists) {
+                const attempts = response.data.attempts || 0;
+                useStore.getState().setVerificationErrorMessage(
+                    `Le fokontany est invalide. Tentative ${attempts} sur 3.`
+                );
+                set({ loading: false }); // Arrêter le chargement ici aussi
+            } else {
+                set({ fokontanyExists: response.data.exists, loading: false });
+            }
         } catch (error) {
-            set({ error: "Erreur lors de la vérification du fokontany.", loading: false });
+            set({
+                error: "Erreur lors de la vérification du fokontany.",
+                loading: false,
+            });
         }
     },
+    
+    resetVerificationState: () => set({
+        VerificationErrorMessage: null,
+        districtExists: null,
+        communeExists: null,
+        fokontanyExists: null,
+        loading: false,
+    }),
+    
 }));
 
 export default useStore;

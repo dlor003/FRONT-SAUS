@@ -12,7 +12,6 @@ const GetStore = create((set) => ({
         set({ loading: true, error: null });
             try {
                 const response = await axios.get("http://127.0.0.1:8000/api/allData");
-                console.log(response.data)
                 set({ data: response.data, loading: false }); // Stocker toutes les données dans `data`
             } catch (error) {
                 const errorMessage =

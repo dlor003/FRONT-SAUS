@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import useAuthStore from "../AuthStore"; // Import du store Zustand
+import useAuthStore from "../ZustandFile/AuthStore"; // Import du store Zustand
 import logo from "../../assets/logo.png";
 
 const Login = () => {

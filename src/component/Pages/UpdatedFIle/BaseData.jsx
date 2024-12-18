@@ -1,156 +1,189 @@
 import React, { useState } from "react";
 import Modify from "../../../assets/Modify.svg";
+import useProfileStore from "../../ZustandFile/AuthStore"; // Import Zustand store
 
 const BaseData = ({ data, onUpdate }) => {
+  const Donne = data.data;
 
-    const Donne = data.data;
-    const [isEditing, setIsEditing] = useState(false); // État pour suivre le mode d'affichage
-    const [formData, setFormData] = useState({
-        nom: Donne.BodyData.basic_data.nom,
-        prenom: Donne.BodyData.basic_data.prenom,
-        email: Donne.BodyData.basic_data.email,
-        id: Donne.BodyData.basic_data.id
-    }); // Stocker uniquement les champs nécessaires
+  // Zustand state
+  const {
+    profilePicture,
+    updateProfileImage,
+    loading,
+    messages,
+    setProfilePicture,
+  } = useProfileStore();
 
-    // Fonction pour basculer entre les modes d'édition et d'affichage
-    const toggleEditMode = () => {
-        setIsEditing((prev) => !prev);
+  // État local pour le formulaire
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    nom: Donne.BodyData.basic_data.nom,
+    prenom: Donne.BodyData.basic_data.prenom,
+    email: Donne.BodyData.basic_data.email,
+    id: Donne.BodyData.basic_data.id,
+  });
+
+  // Basculer le mode édition
+  const toggleEditMode = () => {
+    setIsEditing((prev) => !prev);
+  };
+
+  // Mise à jour des champs de formulaire
+  const handleInputChange = (fieldName) => (event) => {
+    setFormData((prev) => ({
+      ...prev,
+      [fieldName]: event.target.value,
+    }));
+  };
+
+  // Soumission du formulaire
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const formattedData = {
+      BasicData: { ...formData },
     };
 
-    // Gestionnaire pour mettre à jour les valeurs locales des champs
-    const handleInputChange = (fieldName) => (event) => {
-        setFormData((prev) => ({
-            ...prev,
-            [fieldName]: event.target.value, // Met à jour uniquement le champ modifié
-        }));
-    };
+    console.log("Données formatées à envoyer :", formattedData);
 
-    // Gestionnaire pour soumettre le formulaire
-    const handleSubmit = (event) => {
-        event.preventDefault(); // Empêche le rechargement de la page
+    // Appeler la fonction onUpdate (peut être liée à une API)
+    onUpdate(formattedData);
 
-        // Création de l'objet au format demandé
-        const formattedData = {
-            BasicData: { ...formData }, // Inclure uniquement les champs sélectionnés
-        };
+    // Quitter le mode édition
+    setIsEditing(false);
+  };
 
-        console.log("Données formatées à envoyer :", formattedData);
+  // Gérer l'upload d'image
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      updateProfileImage({
+        file,
+        token: Donne.token, // Remplace par le token de ton utilisateur
+        id: Donne.id, // Utilise l'ID de l'utilisateur
+      });
+    }
+  };
 
-        // Envoi de l'objet formaté
-        onUpdate(formattedData);
-
-        // Quitter le mode édition
-        setIsEditing(false);
-    };
-
-    return (
-        <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="relative flex items-center space-x-4">
-                {/* Photo de profil */}
-                {Donne.BodyDataprofile_picture ? (
-                    <img
-                        src={Donne.BodyDataprofile_picture}
-                        alt="Profile"
-                        className="w-24 h-24 rounded-full"
-                    />
-                ) : (
-                    <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center">
-                        <span className="text-gray-600">No Image</span>
-                    </div>
-                )}
-
-                {/* Informations utilisateur */}
-                <div>
-                    {isEditing ? (
-                        // Afficher les données dans des champs de formulaire
-                        <form className="space-y-6" onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <label htmlFor="nom" className="block text-sm font-medium text-gray-700">
-                                    Nom
-                                </label>
-                                <input
-                                    type="text"
-                                    name="nom"
-                                    id="nom"
-                                    value={formData.nom}
-                                    onChange={handleInputChange("nom")}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label htmlFor="prenom" className="block text-sm font-medium text-gray-700">
-                                    Prénom
-                                </label>
-                                <input
-                                    type="text"
-                                    name="prenom"
-                                    id="prenom"
-                                    value={formData.prenom}
-                                    onChange={handleInputChange("prenom")}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
-                                />
-                            </div>
-
-
-                            <div className="mb-4">
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                    Email
-                                </label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange("email")}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
-                                />
-                            </div>
-                            <div className="flex justify-end">
-                                <button
-                                    type="submit"
-                                    className="bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
-                                >
-                                    Ajouter
-                                </button>
-                                <button
-                                    onClick={toggleEditMode}
-                                    type="button"
-                                    className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 ml-20"
-                                >
-                                    Annuler
-                                </button>
-                            </div>
-                        </form>
-                    ) : (
-                        // Afficher les données comme du texte statique
-                        <div>
-                            <p className="ml-10">
-                                <strong>Nom : </strong> {formData.nom}
-                            </p>
-                            <p className="ml-10">
-                                <strong>Prénom : </strong> {formData.prenom}
-                            </p>
-                            <p className="ml-10">
-                                <strong>Email : </strong> {formData.email}
-                            </p>
-                        </div>
-                    )}
-                </div>
-
-                {/* Icône en haut à droite */}
-                <div className="absolute top-0 right-0 p-2">
-                    <button onClick={toggleEditMode}>
-                        <img
-                            src={Modify}
-                            alt="Icône"
-                            className="h-6 w-6 text-gray-600"
-                        />
-                    </button>
-                </div>
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="relative flex items-center space-x-4">
+        {/* Profile Picture Component */}
+        {/* Affichage de l'image de profil */}
+        {Donne.profile_picture ? (
+            <img
+            src={Donne.profile_picture} // Utilise l'image de profil provenant des données
+            alt="Profile"
+            className="w-24 h-24 rounded-full"
+            />
+        ) : profilePicture ? (
+            <img
+            src={profilePicture} // Si aucune image dans Donne, utilise celle de Zustand
+            alt="Profile"
+            className="w-24 h-24 rounded-full"
+            />
+        ) : (
+            <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center">
+            <label className="flex flex-col items-center justify-center">
+                <span className="text-gray-600">Upload Image</span>
+                <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileUpload}
+                />
+            </label>
             </div>
+        )}
+
+        <div>
+          {isEditing ? (
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label htmlFor="nom" className="block text-sm font-medium text-gray-700">
+                  Nom
+                </label>
+                <input
+                  type="text"
+                  id="nom"
+                  value={formData.nom}
+                  onChange={handleInputChange("nom")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="prenom" className="block text-sm font-medium text-gray-700">
+                  Prénom
+                </label>
+                <input
+                  type="text"
+                  id="prenom"
+                  value={formData.prenom}
+                  onChange={handleInputChange("prenom")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleInputChange("email")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100"
+                />
+              </div>
+
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+                >
+                  Enregistrer
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleEditMode}
+                  className="bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 ml-4"
+                >
+                  Annuler
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div>
+              <p>
+                <strong>Nom : </strong> {formData.nom}
+              </p>
+              <p>
+                <strong>Prénom : </strong> {formData.prenom}
+              </p>
+              <p>
+                <strong>Email : </strong> {formData.email}
+              </p>
+            </div>
+          )}
         </div>
-    );
+
+        <div className="absolute top-0 right-0 p-2">
+          <button onClick={toggleEditMode}>
+            <img src={Modify} alt="Modifier" className="h-6 w-6" />
+          </button>
+        </div>
+      </div>
+
+      {/* Message d'état */}
+      {messages && (
+        <p className={`mt-4 text-sm ${loading ? "text-yellow-500" : "text-green-500"}`}>
+          {messages}
+        </p>
+      )}
+    </div>
+  );
 };
 
 export default BaseData;
