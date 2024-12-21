@@ -33,7 +33,7 @@ const Questionnaire = () => {
     const [fokontany, setFokontany] = useState(""); // Fokontany sélectionné
 
     const dataFromPreviousPage = location.state;
-    console.log(dataFromPreviousPage.data.id)
+
     useEffect(() => {
         if (!BasicId) {
             navigate("/login");

@@ -38,7 +38,6 @@ const SectionData = ({ data, onUpdate }) => {
             sectionsData: { ...section },
         };
 
-        console.log("Données formatées à envoyer :", formattedData);
 
         // Envoi de l'objet formaté
         onUpdate(formattedData);

@@ -54,7 +54,6 @@ const Users = ({ users }) => {
     // Fonction pour débloquer un utilisateur
     const handleUnblockUser = (id) => {
         unBlockUser(id);
-        console.log(`Déblocage de l'utilisateur avec l'ID : ${id}`);
         // Ici, ajoutez la logique pour débloquer l'utilisateur via une requête API ou autre
     };
 
@@ -113,7 +112,8 @@ const Users = ({ users }) => {
                 <thead>
                     <tr className="bg-gray-200">
                         <th className="p-2">ID</th>
-                        <th className="p-2">Utilisateur</th>
+                        <th className="p-2">Nom</th>
+                        <th className="p-2">Email</th>
                         <th className="p-2">Statut</th>
                         <th className="p-2">Action</th>
                     </tr>
@@ -124,6 +124,7 @@ const Users = ({ users }) => {
                             <tr key={user.id} className="text-center border-b">
                                 <td className="p-2">{user.id}</td>
                                 <td className="p-2">{user.nom}</td>
+                                <td className="p-2">{user.email}</td>
                                 <td className="p-2">
                                     {user.is_blocked ? "Bloqué" : "Actif"}
                                 </td>

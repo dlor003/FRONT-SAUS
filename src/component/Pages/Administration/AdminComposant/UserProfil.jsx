@@ -5,7 +5,6 @@ import useAdminStore from "../../../ZustandFile/AdminStore";
 const UserProfil = () => {
     const { id } = useParams(); // Récupère l'ID de l'utilisateur depuis l'URL
     const { OneUser, fetchOneUser } = useAdminStore();
-    console.log(OneUser)
     const User = OneUser.personnelData;
     
     if (!OneUser) {

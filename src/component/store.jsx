@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
+import useAuthStore from "./ZustandFile/AuthStore"; // Importer useAuthStore
 
-// Création du store Zustand
 const useStore = create((set) => ({
     // États pour les données
     districtExists: null,
@@ -74,9 +74,6 @@ const useStore = create((set) => ({
         }
     },
     
-    
-    
-
     verifyFokontany: async (fokontanyData) => {
         set({ loading: true, error: null, messageTentativeFailedFokotany: null });
         try {
@@ -108,6 +105,44 @@ const useStore = create((set) => ({
                 loading: false,
             });
         }
+    },
+
+    // Vérification de l'email
+    verifyEmail: async (email) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/api/verify-email", { email });
+            set({ emailExists: response.data.exists, loading: false });
+            console.log(response.data)
+            const  basicId = response.data.data.id 
+            
+            // Mettre à jour le BasicId dans AuthStore
+            useStore.getState().updateBasicId(basicId);
+            return response.data;
+        } catch (e) {
+            console.log(e)
+            set({ error: e.message, loading: false });
+            throw e;
+        }
+    },
+
+    // Vérification de l'email
+    verifyExistsEmail: async (email) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/api/verify-exists-email", { email });
+            set({ emailExists: response.data.exists, loading: false });
+
+            return response.data;
+        } catch (e) {
+            set({ error: e.response?.data?.message || "Erreur lors de la vérification de l'email.", loading: false });
+            throw e;
+        }
+    },
+
+    // Méthode pour mettre à jour le BasicId dans AuthStore
+    updateBasicId: (newBasicId) => {
+        useAuthStore.setState({ BasicId: newBasicId });
     },
     
     resetVerificationState: () => set({

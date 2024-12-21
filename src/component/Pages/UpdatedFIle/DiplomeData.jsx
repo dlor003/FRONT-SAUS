@@ -48,7 +48,6 @@ const DiplomeData = ({ data, onUpdate }) => {
             autresDiplomes: autresDiplomes, // Inclure le champ autresDiplomes
         };
 
-        console.log("Données mises à jour :", selectedDiplomesObject);
 
         // Appeler la fonction de mise à jour
         onUpdate(selectedDiplomesObject);

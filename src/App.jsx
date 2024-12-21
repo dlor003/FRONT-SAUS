@@ -180,7 +180,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/UserProfil/:id" // Route pour l'administration
                     element={

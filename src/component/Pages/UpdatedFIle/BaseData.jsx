@@ -44,7 +44,6 @@ const BaseData = ({ data, onUpdate }) => {
       BasicData: { ...formData },
     };
 
-    console.log("Données formatées à envoyer :", formattedData);
 
     // Appeler la fonction onUpdate (peut être liée à une API)
     onUpdate(formattedData);

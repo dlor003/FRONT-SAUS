@@ -38,7 +38,6 @@ const PersoData = ({data, onUpdate}) =>
             personnelData: { ...formData }, // Inclure uniquement les champs sélectionnés
         };
 
-        console.log("Données formatées à envoyer :", formattedData);
 
         // Envoi de l'objet formaté
         onUpdate(formattedData);

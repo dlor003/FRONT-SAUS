@@ -70,7 +70,6 @@ const ActivityData = ({ data, onUpdate }) => {
             })),
         };
 
-        console.log("Données formatées à envoyer :", formattedData);
 
         // Appeler le callback pour envoyer les données
         onUpdate(formattedData);

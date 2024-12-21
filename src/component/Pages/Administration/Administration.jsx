@@ -4,6 +4,7 @@ import Users from "./AdminComposant/Users";
 import Statistique from "./AdminComposant/Statistique";
 import AddAdmin from "./AdminComposant/AddAdmin";
 import useAdminStore from "../../ZustandFile/AdminStore";
+import PromoteUser from "./AdminComposant/PromoteUser";
 
 const Administration = () => {
     const [activeTab, setActiveTab] = useState("demandes");
@@ -34,7 +35,6 @@ const Administration = () => {
             fetchAllAdmin();
         }
     }, [data.demandes, fetchDemandes, AllUser, fetchAllUser, fetchAllAdmin, AllAdmin]);
-    console.log(AllAdmin)
     const demandes = data.demandes || []; // Assurez-vous que 'demandes' est un tableau
 
     if (loading) return <div>Chargement...</div>; // Affiche un message de chargement
@@ -45,6 +45,7 @@ const Administration = () => {
         { name: "Les utilisateurs", id: "utilisateurs" },
         { name: "Statistiques", id: "statistiques" },
         { name: "Les admins", id: "admins" },
+        { name: "Promotion", id: "promotion" },
     ];
 
     return (
@@ -74,6 +75,7 @@ const Administration = () => {
                 {activeTab === "utilisateurs" && <Users users={AllUser.AllUsers} />}
                 {activeTab === "statistiques" && <Statistique/>}
                 {activeTab === "admins" && <AddAdmin  data={AllAdmin}/>}
+                {activeTab === "promotion" && <PromoteUser />}
             </div>
         </div>
     );

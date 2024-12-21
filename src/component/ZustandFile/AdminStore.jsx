@@ -9,6 +9,7 @@ const useAdminStore = create((set, get) => ({
     AllUser: [],
     OneUser: null,
     unBlockSuccess: null,
+    onAdminSuccess:null,
     AllAdmin: [],
 
     fetchAllUser: async () => {
@@ -154,7 +155,7 @@ const useAdminStore = create((set, get) => ({
         console.log(response);
         set({ unBlockSuccess: "Succès, l'utilisateur est débloqué avec succès" });
 
-            // Après 5 secondes, remettre unBlockSuccess à null
+        // Après 5 secondes, remettre unBlockSuccess à null
         setTimeout(() => {
           set({ unBlockSuccess: null });
         }, 5000); // 5000 millisecondes = 5 secondes
@@ -169,6 +170,43 @@ const useAdminStore = create((set, get) => ({
       } finally {
         set({ loading: false });
       }
+    },
+
+    searchUser: async (query) => {
+      const token = get().token;
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/users/search?query=${query}`,  {
+          headers: { 
+            'Authorization': `Bearer ${token}` 
+          }
+        });
+        console.log(response.data)
+        return response.data; // Retourner l'utilisateur trouvé
+      } catch (error) {
+          console.log(error)
+      }
+    },
+    promoteUser: async (userId) => {
+        try {
+                const token = get().token;
+                await axios.post(`http://127.0.0.1:8000/api/users/promote`, { id: userId }, {
+                headers: { 
+                    'Authorization': `Bearer ${token}` 
+                }
+                }); // Promouvoir l'utilisateur
+                set({onAdminSuccess: "Succès, il a ete bien promus en administrateur"})
+                // Après 5 secondes, remettre unBlockSuccess à null
+                setTimeout(() => {
+                    set({ onAdminSuccess: null });
+                }, 5000); // 5000 millisecondes = 5 secondes
+        } catch (error) {
+            console.log(error)
+            set({onAdminSuccess: "erreur l'admin n'a pas pu etre promu"})
+            // Après 5 secondes, remettre unBlockSuccess à null
+            setTimeout(() => {
+                set({ onAdminSuccess: null });
+            }, 5000); // 5000 millisecondes = 5 secondes
+        }
     },
     
   }));

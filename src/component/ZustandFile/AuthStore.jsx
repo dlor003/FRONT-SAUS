@@ -1,23 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware"; // Middleware pour persistance
 import axios from "axios";
-import { data } from "jquery";
 
 const useAuthStore = create(
   persist(
     (set) => ({
-        user: null,
         loading: false,
         error: null,
-        isAuthenticated: false,
         dataUser: null,
         BasicId: null, // Ajouter une clé userId dans le store pour stocker l'ID
         status: "",
         profilePicture: null, // Initial profile picture
         messages : null,
         user: JSON.parse(localStorage.getItem("user")) || null, // Charge le user depuis localStorage
-        isAuthenticated: !!localStorage.getItem("user"), // Détermine si l'utilisateur est connecté
+        isAuthenticated: !!localStorage.getItem("user") || null, // Détermine si l'utilisateur est connecté
         authLoading: false,
+        cotisationAdd: null,
 
         // Fonction pour récupérer les demandes de l'utilisateur
         fetchDemandes: async ({ userId, token }) => {
@@ -31,7 +29,7 @@ const useAuthStore = create(
             if (response.status === 200 && Array.isArray(response.data)) {
                 set({ demandes: response.data, status: "" });
             } else {
-                set({ demandes: [], status: "Aucune demande trouvée pour cet utilisateur." });
+                set({ demandes: [] });
             }
             } catch (error) {
             set({ demandes: [], status: "Erreur lors de la récupération des demandes." });
@@ -41,26 +39,21 @@ const useAuthStore = create(
         },
         
 
-        postDemande: async ({typeDemande, message, token, id}) => {
+        postDemande: async ({ data, token }) => {
             set({ loading: true });
             try {
-                console.log(typeDemande, message, token, id)
-                await axios.post("http://127.0.0.1:8000/api/demandes", {
-                type_demande: typeDemande,
-                message: message,
-                id: id
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            set({ status: "Demande envoyée avec succès !" });
+                await axios.post("http://127.0.0.1:8000/api/demandes", data, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                set({ status: "Demande envoyée avec succès !" });
             } catch (error) {
-                console.log(error)
-            set({ status: "Erreur lors de l'envoi de la demande." });
+                console.log(error);
+                set({ status: "Erreur lors de l'envoi de la demande." });
             } finally {
-            set({ loading: false });
+                set({ loading: false });
             }
         },
-
+        
         // Method to upload a new profile image
         updateProfileImage: async ({ file, token, id }) => {
             set({ loading: true, status: null }); // Set loading to true
@@ -100,13 +93,14 @@ const useAuthStore = create(
         register: async (data) => {
             set({ loading: true, error: null });
             try {
-            const response = await axios.post("http://127.0.0.1:8000/api/register", data);
-            set({ user: response.data.user, isAuthenticated: true, loading: false });
-            return response.data;
+                const response = await axios.post("http://127.0.0.1:8000/api/register", data);
+                set({ user: response.data.user, isAuthenticated: true, loading: false });
+                return response.data;
             } catch (error) {
-            const errorMessage =
-                error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.";
-            set({ error: errorMessage, loading: false });
+                console.log(error)
+                const errorMessage =
+                    error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.";
+                 set({ error: errorMessage, loading: false });
             }
         },
 
@@ -162,6 +156,54 @@ const useAuthStore = create(
             }
         },
 
+        postCotisation: async ({ data, token }) => {
+            set({ loading: true, error: null });
+            console.log(token);  // Vérifie ici si le token est bien défini
+        
+            if (!token) {
+                set({ error: "Token manquant", loading: false });
+                return;
+            }
+        
+            try {
+                const response = await axios.post(
+                    "http://127.0.0.1:8000/api/cotisation",
+                    data,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Autorisation avec le token
+                            "Content-Type": "multipart/form-data", // Type de contenu multipart
+                        },
+                    }
+                );
+        
+                set({
+                    isAuthenticated: true,
+                    loading: false,
+                    cotisationAdd: "succès, la cotisation a bien ete ajouter",
+                    error:null
+                });
+                setTimeout(() => {
+                        set({cotisationAdd: null })
+                }, 5000);
+        
+                return response.data;
+            } catch (error) {
+                console.log(error);
+                const errorMessage =
+                    error.response?.data?.message || "Une erreur est survenue lors de la soumission.";
+                set({ 
+                    error: errorMessage, 
+                    loading: false, 
+                    isAuthenticated: false,
+                    cotisationAdd: "erreur de l'ajout du cotisation" });
+                setTimeout(() => {
+                        set({cotisationAdd: null })
+                }, 5000);
+        
+            }
+        },
+        
             // Méthode de mise à jour
         update: async (personnelId, updatedData) => {
             set({ loading: true });
