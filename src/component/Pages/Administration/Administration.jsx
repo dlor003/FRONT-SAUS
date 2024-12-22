@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Demande from "./AdminComposant/Demande";
 import Users from "./AdminComposant/Users";
-import Statistique from "./AdminComposant/Statistique";
 import AddAdmin from "./AdminComposant/AddAdmin";
 import useAdminStore from "../../ZustandFile/AdminStore";
 import PromoteUser from "./AdminComposant/PromoteUser";

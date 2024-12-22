@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import axios from "axios";
 import useAuthStore from "./ZustandFile/AuthStore"; // Importer useAuthStore
-import { useNavigate } from "react-router-dom";
+import { API_BASE_URL }from "../apiConfig"
+
 
 const useStore = create((set) => ({
     // États pour les données
@@ -20,7 +21,7 @@ const useStore = create((set) => ({
     fetchdataToVerified: async () => {
         set({ loading: true, error: null });
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/dataToVerified");
+                const response = await axios.get(`${API_BASE_URL}dataToVerified`);
                 console.log(response.data)
                 set({ dataToVerified: response.data, loading: false }); // Stocker toutes les données dans `data`
             } catch (error) {
@@ -36,7 +37,7 @@ const useStore = create((set) => ({
         try {
             console.log(district)
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/verify-district",
+                `${API_BASE_URL}verify-district`,
                 { district }
             );
             set({ districtExists: response.data.exists, loading: false });
@@ -49,7 +50,7 @@ const useStore = create((set) => ({
         set({ loading: true, error: null, VerificationErrorMessage: null });
         try {
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/verify-commune",
+                `${API_BASE_URL}verify-commune`,
                 communeData
             );
     
@@ -79,7 +80,7 @@ const useStore = create((set) => ({
         set({ loading: true, error: null, messageTentativeFailedFokotany: null });
         try {
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/verify-fokontany",
+                `${API_BASE_URL}verify-fokontany`,
                 fokontanyData
             );
     
@@ -112,7 +113,7 @@ const useStore = create((set) => ({
     verifyEmail: async (email) => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/verify-email", { email });
+            const response = await axios.post(`${API_BASE_URL}verify-email`, { email });
             set({ emailExists: response.data.exists, loading: false });
             console.log(response.data)
             const  basicId = response.data.data.id 
@@ -131,7 +132,7 @@ const useStore = create((set) => ({
     verifyExistsEmail: async (email) => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/verify-exists-email", { email });
+            const response = await axios.post(`${API_BASE_URL}verify-exists-email`, { email });
             set({ emailExists: response.data.exists, loading: false });
 
             return response.data;

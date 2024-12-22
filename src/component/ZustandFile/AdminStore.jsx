@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
+import { API_BASE_URL }from "../../apiConfig"
+
 // store Zustand
 const useAdminStore = create((set, get) => ({
     loading: false,
@@ -15,9 +17,8 @@ const useAdminStore = create((set, get) => ({
     fetchAllUser: async () => {
       set({ loading: true, error: false });
       const token = get().token;
-      console.log(token)
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/AllUser", {
+        const response = await axios.get(`${API_BASE_URL}AllUser`, {
           headers: { Authorization: `Bearer ${token}` },
         });
   
@@ -30,9 +31,8 @@ const useAdminStore = create((set, get) => ({
     fetchAllAdmin: async () => {
       set({ loading: true, error: false });
       const token = get().token;
-      console.log(token)
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/AllAdmin", {
+        const response = await axios.get(`${API_BASE_URL}AllAdmin`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         set({ AllAdmin: response.data, loading: false }); // Remettre tout l'objet réponse
@@ -46,10 +46,9 @@ const useAdminStore = create((set, get) => ({
         set({ loading: true, error: false });
         const token = get().token; // Récupérer le token ici
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/user/${id}/profile`, {
+            const response = await axios.get(`${API_BASE_URL}user/${id}/profile`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log(response.data)
             set({ OneUser: response.data, loading: false }); // Stocker la réponse directement
         } catch (error) {
             console.error("Erreur lors de la récupération de l'utilisateur :", error);
@@ -64,7 +63,7 @@ const useAdminStore = create((set, get) => ({
       const token = get().token;
       
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/getAllDemandes", {
+        const response = await axios.get(`${API_BASE_URL}getAllDemandes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
   
@@ -80,7 +79,7 @@ const useAdminStore = create((set, get) => ({
       
       try {
         const response = await axios.put(
-          `http://127.0.0.1:8000/api/demandes/${id}/traitee`,
+          `${API_BASE_URL}demandes/${id}/traitee`,
           {},
           {
             headers: {
@@ -114,7 +113,7 @@ const useAdminStore = create((set, get) => ({
       
       try {
         const response = await axios.put(
-          `http://127.0.0.1:8000/api/demandes/${id}/rejete`,
+          `${API_BASE_URL}demandes/${id}/rejete`,
           {},
           {
             headers: {
@@ -148,12 +147,11 @@ const useAdminStore = create((set, get) => ({
       console.log(token);
       try {
         // Envoi du token dans les headers, pas dans le body
-        const response = await axios.post(`http://127.0.0.1:8000/api/user/${id}/unblock`, {}, {
+        const response = await axios.post(`${API_BASE_URL}user/${id}/unblock`, {}, {
           headers: { 
             'Authorization': `Bearer ${token}` 
           }
         });
-        console.log(response);
         set({ unBlockSuccess: "Succès, l'utilisateur est débloqué avec succès" });
 
         // Après 5 secondes, remettre unBlockSuccess à null
@@ -176,12 +174,11 @@ const useAdminStore = create((set, get) => ({
     searchUser: async (query) => {
       const token = get().token;
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/users/search?query=${query}`,  {
+        const response = await axios.get(`${API_BASE_URL}users/search?query=${query}`,  {
           headers: { 
             'Authorization': `Bearer ${token}` 
           }
         });
-        console.log(response.data)
         return response.data; // Retourner l'utilisateur trouvé
       } catch (error) {
           console.log(error)
@@ -190,7 +187,7 @@ const useAdminStore = create((set, get) => ({
     promoteUser: async (userId) => {
         try {
                 const token = get().token;
-                await axios.post(`http://127.0.0.1:8000/api/users/promote`, { id: userId }, {
+                await axios.post(`${API_BASE_URL}users/promote`, { id: userId }, {
                 headers: { 
                     'Authorization': `Bearer ${token}` 
                 }

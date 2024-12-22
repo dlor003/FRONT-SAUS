@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
+import { API_BASE_URL }from "../../apiConfig"
+
 
 // Store Zustand
 const GetStore = create((set) => ({
@@ -11,7 +13,7 @@ const GetStore = create((set) => ({
     fetchAllData: async () => {
         set({ loading: true, error: null });
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/allData");
+                const response = await axios.get(`${API_BASE_URL}allData`);
                 set({ data: response.data, loading: false }); // Stocker toutes les données dans `data`
             } catch (error) {
                 const errorMessage =

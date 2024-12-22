@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware"; // Middleware pour persistance
 import axios from "axios";
+import { API_BASE_URL }from "../../apiConfig"
 
 const useAuthStore = create(
   persist(
@@ -21,7 +22,7 @@ const useAuthStore = create(
         fetchDemandes: async ({ userId, token }) => {
             set({ loading: true, status: "" });
             try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/demandes/${userId}`, {
+            const response = await axios.get(`${API_BASE_URL}demandes/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -42,7 +43,7 @@ const useAuthStore = create(
         postDemande: async ({ data, token }) => {
             set({ loading: true });
             try {
-                await axios.post("http://127.0.0.1:8000/api/demandes", data, {
+                await axios.post(`${API_BASE_URL}demandes`, data, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 set({ status: "Demande envoyée avec succès !" });
@@ -64,7 +65,7 @@ const useAuthStore = create(
 
             // Send the file to the Laravel backend
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/profile-picture",
+                `${API_BASE_URL}profile-picture`,
                 formData,
                 {
                 headers: {
@@ -93,7 +94,7 @@ const useAuthStore = create(
         register: async (data) => {
             set({ loading: true, error: null });
             try {
-                const response = await axios.post("http://127.0.0.1:8000/api/register", data);
+                const response = await axios.post(`${API_BASE_URL}register`, data);
                 set({ user: response.data.user, isAuthenticated: true, loading: false });
                 return response.data;
             } catch (error) {
@@ -107,7 +108,7 @@ const useAuthStore = create(
         registerBasicData: async (data) => {
             set({ loading: true, error: null });
                 try {
-                const response = await axios.post("http://127.0.0.1:8000/api/registerBasicData", data);
+                const response = await axios.post(`${API_BASE_URL}registerBasicData`, data);
             
                 // Supposons que l'ID de base est dans response.data.id
                 const userId = response.data.data.id;
@@ -134,7 +135,7 @@ const useAuthStore = create(
         connexion: async (data) => {
             set({ loading: true, error: null });
             try {
-            const response = await axios.post("http://127.0.0.1:8000/api/login", data);
+            const response = await axios.post(`${API_BASE_URL}login`, data);
 
             const role = response.data.user.roles;
             const token = response.data.token;
@@ -167,7 +168,7 @@ const useAuthStore = create(
         
             try {
                 const response = await axios.post(
-                    "http://127.0.0.1:8000/api/cotisation",
+                    `${API_BASE_URL}cotisation`,
                     data,
                     {
                         headers: {
