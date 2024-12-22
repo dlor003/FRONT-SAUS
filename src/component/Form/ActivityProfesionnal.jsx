@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import GetStore from "../ZustandFile/GetStore";
+import PropTypes from 'prop-types';
 
 const ActivityProfesionnal = ({ formData, handleInputChange, errors }) => {
-    const { fetchAllData, getActivity, loading, error } = GetStore();
+    const { fetchAllData, getActivity } = GetStore();
 
     useEffect(() => {
         fetchAllData();
-    }, []);
+    }, [fetchAllData]);
 
     const activity = getActivity();
 
@@ -34,11 +35,15 @@ const ActivityProfesionnal = ({ formData, handleInputChange, errors }) => {
                             {" "}
                             -{" "}
                         </option>
-                        {activity.map((activities) => (
-                            <option key={activities.id} value={activities.id}>
-                                {activities.nom}
-                            </option>
-                        ))}
+                        {activity && activity.length > 0 ? (
+                            activity.map((activities) => (
+                                <option key={activities.id} value={activities.id}>
+                                    {activities.nom}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Aucune activité disponible</option>
+                        )}
                     </select>
                     <br />
                     {errors.activity && (
@@ -71,5 +76,18 @@ const ActivityProfesionnal = ({ formData, handleInputChange, errors }) => {
         </div>
     );
 };
+
+ActivityProfesionnal.propTypes = {
+    formData: PropTypes.shape({
+        activity: PropTypes.string,
+        domain: PropTypes.string,
+    }).isRequired,
+    handleInputChange: PropTypes.func.isRequired,
+    errors: PropTypes.shape({
+        activity: PropTypes.string,
+        domain: PropTypes.string,
+    }).isRequired,
+};
+
 
 export default ActivityProfesionnal;

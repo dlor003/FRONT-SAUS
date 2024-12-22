@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import useAdminStore from "../../../ZustandFile/AdminStore"; // Store Zustand
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +10,6 @@ const PromoteUser = () => {
   const [usersPerPage] = useState(10); // Nombre d'utilisateurs par page
   const [selectedUser, setSelectedUser] = useState(null); // Utilisateur sélectionné pour la modal
   const [isModalOpen, setIsModalOpen] = useState(false); // Gestion de la modal
-  const navigate = useNavigate();
 
   // Gérer la recherche utilisateur
   const handleSearch = async () => {
@@ -20,7 +19,7 @@ const PromoteUser = () => {
   };
 
   // Ouvrir la modal pour un utilisateur donné
-  const openModal = (user, event) => {
+  const openModal = (user) => {
     setSelectedUser(user);
     setIsModalOpen(true);
   };

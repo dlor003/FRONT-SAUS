@@ -45,7 +45,7 @@ const Users = ({ users }) => {
         setCurrentPage(1); // Revenir à la première page après un changement de filtre
     };
 
-    const handleViewUser = (id) => {
+    const handleViewUser = (id) => {        
         fetchOneUser(id);
         navigate(`/UserProfil/${id}`);
     };

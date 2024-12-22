@@ -42,7 +42,6 @@ const Profil = () => {
         </div>
         );
     }
-    console.log( dataUser)
 
     const personnel = dataUser.user;
     if (!personnel) {

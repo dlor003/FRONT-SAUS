@@ -43,7 +43,6 @@ const Administration = () => {
     const tabs = [
         { name: "Les demandes", id: "demandes" },
         { name: "Les utilisateurs", id: "utilisateurs" },
-        { name: "Statistiques", id: "statistiques" },
         { name: "Les admins", id: "admins" },
         { name: "Promotion", id: "promotion" },
     ];
@@ -73,7 +72,6 @@ const Administration = () => {
             <div className="p-4 bg-gray-100">
                 {activeTab === "demandes" && <Demande data={demandes} />}
                 {activeTab === "utilisateurs" && <Users users={AllUser.AllUsers} />}
-                {activeTab === "statistiques" && <Statistique/>}
                 {activeTab === "admins" && <AddAdmin  data={AllAdmin}/>}
                 {activeTab === "promotion" && <PromoteUser />}
             </div>

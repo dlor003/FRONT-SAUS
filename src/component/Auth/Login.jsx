@@ -24,7 +24,6 @@ const Login = () => {
 
         try {
             const response = await connexion(DataToSend); // Appelle la méthode de connexion
-            console.log("Réponse API :", response); // Debug
             navigate("/dashboard", { state: response.data }); // Redirige vers le Dashboard après connexion
         } catch (err) {
             setError2("Email ou mot de passe incorrect");
@@ -80,7 +79,7 @@ const Login = () => {
                             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         />
                     </div>
-                    {error2 && <p className="text-red-500 text-sm">{error2}</p>}
+                    {error2 && <p className="text-black-600 text-sm text-center py-2 px-2 rounded-lg bg-red-400 mb-1">{error2}</p>}
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white py-3 rounded-md transition hover:bg-blue-600"

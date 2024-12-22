@@ -110,8 +110,8 @@ const RegisterBasicData = () => {
                     <form className="w-full max-w-md" onSubmit={handleSubmit}>
                         <h1 className="text-2xl font-bold text-center">INSCRIPTION DE BASE</h1>
                         <h6 className="text-center text-sm mb-6">
-                            Pour l'inscription, il y a quelque étapes à respecter. <br />
-                            Veuillez les suivre attentivement s'il vous plaît.
+                            Pour l&rsquo;inscription, il y a quelque étapes à respecter. <br />
+                            Veuillez les suivre attentivement s&rsquo;il vous plaît.
                         </h6>
                         {formError && (
                             <div className="text-red-500 text-center mb-4">

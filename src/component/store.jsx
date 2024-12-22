@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import useAuthStore from "./ZustandFile/AuthStore"; // Importer useAuthStore
+import { useNavigate } from "react-router-dom";
 
 const useStore = create((set) => ({
     // États pour les données
@@ -74,7 +75,7 @@ const useStore = create((set) => ({
         }
     },
     
-    verifyFokontany: async (fokontanyData) => {
+    verifyFokontany: async (fokontanyData,navigate) => {
         set({ loading: true, error: null, messageTentativeFailedFokotany: null });
         try {
             const response = await axios.post(

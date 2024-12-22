@@ -10,6 +10,7 @@ const SectionData = ({ data, onUpdate }) => {
 
     useEffect(() => {
         fetchAllData(); // Récupérer toutes les données au montage du composant
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Synchroniser l'état local avec les données parentales

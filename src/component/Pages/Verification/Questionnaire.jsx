@@ -48,6 +48,8 @@ const Questionnaire = () => {
     
             return () => clearTimeout(timer); // Nettoyer le timer si le composant est démonté
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [VerificationErrorMessage]);
     
 
@@ -110,7 +112,7 @@ const Questionnaire = () => {
                 id: dataFromPreviousPage.data.id,
             };
     
-            await verifyFokontany(fokontanyData);
+            await verifyFokontany(fokontanyData, navigate);
     
             if (fokontanyExists) {
                 navigate("/membership", { state: dataFromPreviousPage });
@@ -140,7 +142,6 @@ const Questionnaire = () => {
             setResults(filteredResults);
         }
     }, [dataToVerified, step, searchQuery]);
-    console.log("État loading :", loading);
 
 
     if (loading) {

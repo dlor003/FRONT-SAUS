@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "../ZustandFile/AuthStore"; // Assurez-vous d'importer correctement
-import axios from "axios"; // Nécessaire pour les requêtes API
 
 const Registration = () => {
-    const { register, loading, error } = useAuthStore();
+    const { register } = useAuthStore();
     const [email, setEmail] = useState("");
-    const [emailStatus, setEmailStatus] = useState(null); // null, "loading", "valid", "invalid"
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [passwordStrength, setPasswordStrength] = useState(0); // Force du mot de passe
-    const [different, setDifferent] = useState(false); // Mots de passe différents
     const location = useLocation();
     const navigate = useNavigate();
 

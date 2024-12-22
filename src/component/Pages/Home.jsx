@@ -80,7 +80,7 @@ const Home = () => {
                 {drawEmailVerification ? (                
                         <div className="mt-4 px-4">
                             <label htmlFor="email" className="block font-medium text-gray-700">
-                                J'ai deja un Email
+                                J&apos;ai deja un Email
                             </label>
                             <input
                                 type="email"
@@ -106,7 +106,7 @@ const Home = () => {
                             <div>
                                 <RegisterBasicData />
                                 <div className="flex justify-center mt-2 mb-2">
-                                    <button className="text-center py-2 px-2 rounded-lg bg-green-300 w-48" onClick={updatedraw}>j'ai une email debloquer</button>
+                                    <button className="text-center py-2 px-2 rounded-lg bg-green-300 w-48" onClick={updatedraw}>j&apos;ai une email debloquer</button>
                                 </div>
                             </div>
                         )

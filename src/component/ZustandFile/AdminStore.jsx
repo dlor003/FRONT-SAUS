@@ -49,6 +49,7 @@ const useAdminStore = create((set, get) => ({
             const response = await axios.get(`http://127.0.0.1:8000/api/user/${id}/profile`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            console.log(response.data)
             set({ OneUser: response.data, loading: false }); // Stocker la réponse directement
         } catch (error) {
             console.error("Erreur lors de la récupération de l'utilisateur :", error);

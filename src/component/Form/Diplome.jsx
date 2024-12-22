@@ -14,7 +14,6 @@ const Diplome = ({ formData, errors, handleInputChange }) => {
 
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target;
-        console.log("Checkbox changée :", name, "Checked :", checked);
     
         if (name === "autres") {
         setAutres(checked);
@@ -28,7 +27,6 @@ const Diplome = ({ formData, errors, handleInputChange }) => {
         const updatedDiplomes = checked
             ? [...formData.diplomes, parseInt(name)] // Convertir en entier si nécessaire
             : formData.diplomes.filter((diplomeId) => diplomeId !== parseInt(name));
-        console.log("Diplômes mis à jour :", updatedDiplomes);
         handleInputChange({
             target: { name: "diplomes", value: updatedDiplomes },
         });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Routes, Route, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import useAuthStore from "./component/ZustandFile/AuthStore"; // Import du store Zustand
 import Membership from "./component/MemberShip";
@@ -13,6 +13,7 @@ import Questionnaire from "./component/Pages/Verification/Questionnaire";
 import useStore from "./component/store";
 import Administration from "./component/Pages/Administration/Administration";
 import UserProfil from "./component/Pages/Administration/AdminComposant/UserProfil";
+import PropTypes from 'prop-types';
 
 const ProtectedRoute = ({ allowedRoles = [], children }) => {
     const { user, checkAuth, BasicId, authLoading } = useAuthStore();
@@ -52,10 +53,9 @@ function App() {
     const { user, logout, checkAuth } = useAuthStore();
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const [activeLink, setActiveLink] = useState("");
-    const navigate = useNavigate();
     const location = useLocation(); // Permet de détecter l'URL actuelle
     const { isBlocked } = useStore(); // Suppose que isBlocked est géré dans le store
-
+    
 
     // Mettre à jour `activeLink` en fonction du chemin actuel
     useEffect(() => {
@@ -192,5 +192,7 @@ function App() {
         </>
     );
 }
+
+
 
 export default App;
